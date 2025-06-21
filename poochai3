@@ -1,0 +1,312 @@
+# Updated Whisper Translator App with Pause/Resume, Output Folder, Dual Subtitle Display, Confidence, and Improved Progress Bar
+
+import tkinter as tk
+from tkinter import ttk, filedialog, messagebox
+import threading
+import subprocess
+import whisper
+import torch
+import os
+import wave
+import time
+import contextlib
+import sys
+import io
+import webbrowser
+import tempfile
+import platform
+import pygame
+import pyttsx3
+
+class TranslatorApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("\U0001F3A7 Whisper Video Translator")
+        self.root.geometry("1000x680")
+
+        self.stdout_buffer = io.StringIO()
+        sys.stdout = self.stdout_buffer
+
+        self.file_path = tk.StringVar()
+        self.output_folder = tk.StringVar(value=os.getcwd())
+        self.language = tk.StringVar(value="en")
+        self.model_size = tk.StringVar(value="base")
+        self.debug_mode = tk.BooleanVar(value=False)
+        self.preview_mode = tk.BooleanVar(value=False)
+        self.auto_lang_detect = tk.BooleanVar(value=True)
+        self.status = tk.StringVar(value="Idle.")
+        self.progress_var = tk.DoubleVar(value=0.0)
+        self.elapsed_time = tk.StringVar(value="Elapsed: 00:00")
+        self.eta = tk.StringVar(value="ETA: --:--")
+        self.cancel_requested = False
+        self.pause_requested = False
+        self.resume_event = threading.Event()
+        self.resume_event.set()
+        self.start_time = None
+        self.srt_path = ""
+        self.audio_path = "temp.wav"
+        self.translated_text = ""
+
+        pygame.init()
+        try:
+            self.tts_engine = pyttsx3.init()
+            voices = self.tts_engine.getProperty('voices')
+            self.tts_engine.setProperty('voice', voices[0].id)
+        except Exception as e:
+            self.tts_engine = None
+            print(f"Warning: pyttsx3 initialization failed: {e}")
+
+        self._build_gui()
+        self._start_stdout_updater()
+
+    def _build_gui(self):
+        style = ttk.Style()
+        style.theme_use('default')
+        style.configure("TProgressbar", thickness=20)
+
+        left = ttk.Frame(self.root)
+        left.pack(side="left", fill="y", padx=10, pady=10)
+
+        ttk.Label(left, text="Video File:").grid(row=0, column=0, sticky="w")
+        ttk.Entry(left, textvariable=self.file_path, width=40).grid(row=1, column=0, pady=2)
+        ttk.Button(left, text="Browse", command=self.browse_file).grid(row=1, column=1, padx=5)
+
+        ttk.Label(left, text="Output Folder:").grid(row=2, column=0, sticky="w")
+        ttk.Entry(left, textvariable=self.output_folder, width=40).grid(row=3, column=0, pady=2)
+        ttk.Button(left, text="Browse", command=self.choose_output_folder).grid(row=3, column=1, padx=5)
+
+        ttk.Label(left, text="Translate To:").grid(row=4, column=0, sticky="w", pady=(10, 0))
+        ttk.Combobox(left, textvariable=self.language, values=["en", "es", "fr", "de", "ar", "ja"], state="readonly").grid(row=5, column=0, sticky="w")
+
+        ttk.Label(left, text="Model:").grid(row=6, column=0, sticky="w", pady=(10, 0))
+        ttk.Combobox(left, textvariable=self.model_size, values=["base", "small", "medium", "large"], state="readonly").grid(row=7, column=0, sticky="w")
+
+        ttk.Checkbutton(left, text="\U0001F9EA Preview 2-min Only", variable=self.preview_mode).grid(row=8, column=0, sticky="w")
+        ttk.Checkbutton(left, text="\U0001FAB5 Debug Mode", variable=self.debug_mode).grid(row=9, column=0, sticky="w")
+        ttk.Checkbutton(left, text="\U0001F310 Auto Language Detection", variable=self.auto_lang_detect).grid(row=10, column=0, sticky="w")
+
+        self.translate_btn = ttk.Button(left, text="Translate", command=self.start_translation)
+        self.translate_btn.grid(row=11, column=0, pady=(15, 5), sticky="w")
+
+        self.cancel_btn = ttk.Button(left, text="Cancel", command=self.cancel_translation, state="disabled")
+        self.cancel_btn.grid(row=11, column=1, pady=(15, 5))
+
+        self.pause_btn = ttk.Button(left, text="Pause", command=self.pause_translation, state="disabled")
+        self.pause_btn.grid(row=12, column=0, sticky="w")
+
+        self.resume_btn = ttk.Button(left, text="Resume", command=self.resume_translation, state="disabled")
+        self.resume_btn.grid(row=12, column=1, sticky="e")
+
+        ttk.Button(left, text="▶️ Play Audio", command=self.play_audio).grid(row=13, column=0, sticky="w")
+        ttk.Button(left, text="\U0001F50A Speak Translation", command=self.speak_translation).grid(row=13, column=1, sticky="e")
+        ttk.Button(left, text="\U0001F4C1 Open Output Folder", command=self.open_output_folder).grid(row=14, column=0, columnspan=2, sticky="ew")
+
+        ttk.Label(left, textvariable=self.status, foreground="blue").grid(row=15, column=0, columnspan=2, sticky="w")
+        ttk.Label(left, textvariable=self.elapsed_time).grid(row=16, column=0, sticky="w")
+        ttk.Label(left, textvariable=self.eta).grid(row=17, column=0, sticky="w")
+        ttk.Label(left, text="Progress: ").grid(row=18, column=0, sticky="w")
+        self.progress_bar = ttk.Progressbar(left, variable=self.progress_var, maximum=100, style="TProgressbar")
+        self.progress_bar.grid(row=19, column=0, columnspan=2, sticky="ew")
+
+        right_frame = ttk.Frame(self.root)
+        right_frame.pack(side="right", expand=True, fill="both", padx=10, pady=10)
+
+        scrollbar = ttk.Scrollbar(right_frame)
+        scrollbar.pack(side="right", fill="y")
+
+        self.subtitle_box = tk.Text(right_frame, wrap="word", state="disabled", yscrollcommand=scrollbar.set)
+        self.subtitle_box.pack(side="left", expand=True, fill="both")
+        scrollbar.config(command=self.subtitle_box.yview)
+        self._set_subtitles("Subtitles and debug logs will appear here...")
+
+    def _start_stdout_updater(self):
+        def update():
+            text = self.stdout_buffer.getvalue()
+            self.subtitle_box.config(state="normal")
+            self.subtitle_box.delete("1.0", "end")
+            self.subtitle_box.insert("end", text)
+            self.subtitle_box.config(state="disabled")
+            self.subtitle_box.see("end")
+            self.root.after(500, update)
+        update()
+
+    def browse_file(self):
+        file = filedialog.askopenfilename(filetypes=[("Video files", "*.mp4 *.mov *.mkv *.avi")])
+        if file:
+            self.file_path.set(file)
+
+    def choose_output_folder(self):
+        folder = filedialog.askdirectory()
+        if folder:
+            self.output_folder.set(folder)
+
+    def play_audio(self):
+        try:
+            pygame.mixer.init()
+            pygame.mixer.music.load(self.audio_path)
+            pygame.mixer.music.play()
+        except Exception as e:
+            messagebox.showerror("Playback Error", f"Error playing audio: {e}")
+
+    def speak_translation(self):
+        if not self.tts_engine:
+            messagebox.showerror("TTS Error", "Text-to-Speech engine not initialized.")
+            return
+        if self.translated_text:
+            try:
+                self.tts_engine.say(self.translated_text)
+                self.tts_engine.runAndWait()
+            except Exception as e:
+                messagebox.showerror("TTS Error", f"Error speaking: {e}")
+        else:
+            messagebox.showinfo("No Translation", "No translation available to speak.")
+
+    def open_output_folder(self):
+        folder = self.output_folder.get()
+        if platform.system() == "Windows":
+            os.startfile(folder)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", folder])
+        else:
+            subprocess.Popen(["xdg-open", folder])
+
+    def cancel_translation(self):
+        self.cancel_requested = True
+        self._set_status("\u23F9\uFE0F Cancel requested... Saving progress…")
+
+    def pause_translation(self):
+        self.pause_requested = True
+        self.resume_event.clear()
+        self._set_status("\u23F8\uFE0F Paused")
+        self.pause_btn.config(state="disabled")
+        self.resume_btn.config(state="normal")
+
+    def resume_translation(self):
+        self.pause_requested = False
+        self.resume_event.set()
+        self._set_status("▶️ Resuming…")
+        self.pause_btn.config(state="normal")
+        self.resume_btn.config(state="disabled")
+
+    def start_translation(self):
+        if not self.file_path.get():
+            messagebox.showwarning("No File", "Please select a video file.")
+            return
+        self.cancel_requested = False
+        self.start_time = time.time()
+        self.progress_var.set(0.0)
+        self.eta.set("ETA: --:--")
+        self.elapsed_time.set("Elapsed: 00:00")
+        self._set_status("Starting translation... Calculating ETA...")
+        self.translate_btn.config(state="disabled")
+        self.cancel_btn.config(state="normal")
+        self.pause_btn.config(state="normal")
+        self.resume_btn.config(state="disabled")
+        threading.Thread(target=self._translate, daemon=True).start()
+        self._start_timer()
+
+    def _start_timer(self):
+        if not self.cancel_requested and self.start_time:
+            elapsed = int(time.time() - self.start_time)
+            mins, secs = divmod(elapsed, 60)
+            self.elapsed_time.set(f"Elapsed: {mins:02}:{secs:02}")
+            self.root.after(1000, self._start_timer)
+
+    def _translate(self):
+        try:
+            video = self.file_path.get()
+            self._set_status("Extracting audio and trimming silence…")
+            subprocess.run(["ffmpeg", "-y", "-i", video, "-af", "silenceremove=1:0:-50dB", "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", self.audio_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+            duration = self._get_audio_duration(self.audio_path)
+            if self.preview_mode.get():
+                duration = min(duration, 120.0)
+
+            if self.cancel_requested:
+                return self._reset_ui("Cancelled.")
+
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self._set_status(f"Loading model ({self.model_size.get()}) on {device}…")
+            model = whisper.load_model(self.model_size.get(), device=device)
+
+            self._set_status("Translating...")
+            result = model.transcribe(self.audio_path, task="translate", language=None if self.auto_lang_detect.get() else self.language.get(), verbose=self.debug_mode.get(), fp16=(device=="cuda"))
+
+            lang = result.get("language")
+            if lang:
+                messagebox.showinfo("Detected Language", f"Detected language: {lang}")
+
+            segments = result.get("segments", [])
+            if not segments:
+                return self._reset_ui("No speech segments found.")
+
+            total_time = segments[-1]["end"]
+            if self.preview_mode.get():
+                segments = [s for s in segments if s['end'] <= 120]
+
+            base = os.path.splitext(os.path.basename(video))[0]
+            srt_output = os.path.join(self.output_folder.get(), base + ".srt")
+            txt_output = os.path.join(self.output_folder.get(), base + ".txt")
+            self.srt_path = srt_output
+            self.translated_text = ""
+
+            self._set_status("Saving subtitles and text...")
+            with open(srt_output, "w", encoding="utf-8") as srt_file, open(txt_output, "w", encoding="utf-8") as txt_file:
+                for i, seg in enumerate(segments, 1):
+                    if self.cancel_requested:
+                        break
+                    while self.pause_requested:
+                        self.resume_event.wait()
+
+                    percent = min((i / len(segments)) * 100, 100)
+                    self.progress_var.set(round(percent, 2))
+                    self.root.update_idletasks()
+
+                    elapsed = time.time() - self.start_time
+                    if seg["end"] > 0:
+                        eta_secs = int((elapsed / seg["end"]) * (total_time - seg["end"]))
+                        eta_m, eta_s = divmod(eta_secs, 60)
+                        self.eta.set(f"ETA: ~{eta_m:02}:{eta_s:02}")
+
+                    def fmt(t): return f"{int(t//3600):02}:{int((t%3600)//60):02}:{int(t%60):02},{int((t%1)*1000):03}"
+                    line = f"{i}\n{fmt(seg['start'])} --> {fmt(seg['end'])}\n{seg['text'].strip()}\n\n"
+                    srt_file.write(line)
+                    txt_line = seg['text'].strip()
+                    txt_file.write(f"{txt_line}\n")
+                    self.translated_text += txt_line + " "
+
+            self._reset_ui("\u2705 Done. Subtitles and text saved.")
+        except Exception as e:
+            self._reset_ui(f"\u274C Error: {e}")
+
+    def _reset_ui(self, msg):
+        self._set_status(msg)
+        self.translate_btn.config(state="normal")
+        self.cancel_btn.config(state="disabled")
+        self.pause_btn.config(state="disabled")
+        self.resume_btn.config(state="disabled")
+        self.elapsed_time.set("Elapsed: 00:00")
+        self.eta.set("ETA: --:--")
+        self.progress_var.set(0.0)
+
+    def _set_subtitles(self, text):
+        self.subtitle_box.config(state="normal")
+        self.subtitle_box.delete("1.0", "end")
+        self.subtitle_box.insert("1.0", text.strip())
+        self.subtitle_box.config(state="disabled")
+
+    def _get_audio_duration(self, path):
+        try:
+            with contextlib.closing(wave.open(path, 'r')) as f:
+                return f.getnframes() / float(f.getframerate())
+        except:
+            return 60.0
+
+    def _set_status(self, msg):
+        print(msg)
+        self.status.set(msg)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = TranslatorApp(root)
+    root.mainloop()
