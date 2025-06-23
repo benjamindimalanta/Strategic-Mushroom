@@ -7,8 +7,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
+  padding-top: 20px;
 }
 
 /* CAMERA WRAPPER WITH PORTRAIT RATIO */
@@ -30,14 +31,14 @@ video {
   object-fit: cover;
   border-radius: 8px;
   background: black;
+  filter: sepia(0.6) contrast(1.05) brightness(0.95);
 }
 
-/* SUBTLE VINTAGE TONE OVERLAY */
+/* VINTAGE OVERLAY */
 #vintage-overlay {
   position: absolute;
   top: 0; left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   border-radius: 8px;
   pointer-events: none;
   background: linear-gradient(to bottom, rgba(255, 235, 205, 0.2), rgba(0, 0, 0, 0.1));
@@ -55,9 +56,9 @@ video {
   justify-content: center;
   align-items: center;
   pointer-events: none;
+  padding: 0 10px;
 }
 
-/* COUNTDOWN NUMBER */
 #countdown {
   font-size: clamp(3rem, 8vw, 6em);
   color: #fdf6e3;
@@ -66,7 +67,6 @@ video {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* PROMPT MESSAGE TEXT */
 #frame-msg {
   font-size: clamp(1rem, 4vw, 1.5em);
   font-weight: bold;
@@ -77,19 +77,18 @@ video {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* ACTION BUTTONS WRAPPED NEATLY */
+/* BUTTONS JUST BELOW CAMERA */
 #buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-top: 15px;
   width: 100%;
   max-width: 600px;
+  margin-top: 10px;
 }
 
-/* BUTTON SHARED STYLES */
 button,
 a#download {
   padding: 10px 20px;
@@ -100,7 +99,7 @@ a#download {
   color: white;
   cursor: pointer;
   text-decoration: none;
-  display: inline-block;
+  display: none;
   transition: background 0.2s ease;
 }
 
@@ -109,12 +108,6 @@ a#download:hover {
   background: #444;
 }
 
-/* OPTIONAL: Hide elements initially via JavaScript */
-.hidden {
-  display: none;
-}
-
-/* SNAPSHOT CANVAS */
 canvas {
   display: none;
   margin-top: 20px;
@@ -123,17 +116,9 @@ canvas {
   border-radius: 10px;
 }
 
-/* RESPONSIVE TWEAKS */
 @media (max-width: 480px) {
   #buttons {
     flex-direction: column;
   }
 }
-
-.below-camera {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
+</style>
