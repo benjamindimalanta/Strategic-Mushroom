@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Strategic Mushroom Booth</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div id="camera-wrapper">
     <video id="camera" autoplay playsinline></video>
+    <div id="vintage-overlay"></div>
     <div id="overlay">
       <div id="countdown"></div>
       <div id="frame-msg"></div>
@@ -19,12 +19,11 @@
 
   <div id="buttons">
     <button id="strip">Take a Snap</button>
+    <a id="download" download="photo-strip.png">Download Strip</a>
+    <button id="retake">Take Another</button>
   </div>
 
   <canvas id="snapshot"></canvas>
-  <a id="download" download="photo-strip.png">Download Strip</a>
-<button id="retake" style="display: none;">Take Another</button>
-
 
   <script type="module" src="script.js"></script>
 </body>
