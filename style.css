@@ -97,3 +97,14 @@ canvas {
   background: #333;
   color: white;
 }
+#retake {
+  margin-left: 10px;
+  font-size: 18px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  background: #555;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
