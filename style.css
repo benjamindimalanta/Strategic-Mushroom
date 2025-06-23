@@ -1,3 +1,4 @@
+/* GLOBAL STYLES */
 body {
   margin: 0;
   padding: 0;
@@ -10,6 +11,7 @@ body {
   min-height: 100vh;
 }
 
+/* CAMERA CONTAINER */
 #camera-wrapper {
   position: relative;
   width: 100%;
@@ -21,6 +23,7 @@ body {
   margin-bottom: 10px;
 }
 
+/* VIDEO DISPLAY */
 video {
   width: 100%;
   height: auto;
@@ -29,16 +32,18 @@ video {
   background: black;
 }
 
+/* VINTAGE EFFECT OVERLAY */
 #vintage-overlay {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: linear-gradient(to bottom, rgba(255,235,205,0.2), rgba(0,0,0,0.1));
+  background: linear-gradient(to bottom, rgba(255, 235, 205, 0.2), rgba(0, 0, 0, 0.1));
   mix-blend-mode: overlay;
   pointer-events: none;
   border-radius: 8px;
 }
 
+/* CENTERED OVERLAY CONTENT */
 #overlay {
   position: absolute;
   top: 0;
@@ -51,16 +56,18 @@ video {
   pointer-events: none;
 }
 
+/* COUNTDOWN TIMER */
 #countdown {
-  font-size: 6em;
+  font-size: clamp(3rem, 8vw, 6em);
   color: #fdf6e3;
   font-weight: bold;
   margin-bottom: 10px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
+/* FRAME MESSAGE TEXT */
 #frame-msg {
-  font-size: 1.5em;
+  font-size: clamp(1rem, 4vw, 1.5em);
   font-weight: bold;
   color: #fdf6e3;
   text-align: center;
@@ -69,14 +76,16 @@ video {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* BUTTON CONTAINER */
 #buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
+/* BUTTONS & DOWNLOAD LINK */
 button, a#download {
   padding: 10px 20px;
   font-size: 16px;
@@ -86,9 +95,15 @@ button, a#download {
   background: #333;
   color: white;
   cursor: pointer;
+  display: inline-block; /* changed from 'none' to default visible */
+}
+
+/* OPTIONAL: initially hide via JS if needed */
+button.hidden, a#download.hidden {
   display: none;
 }
 
+/* SNAPSHOT DISPLAY */
 #strip {
   display: inline-block;
 }
