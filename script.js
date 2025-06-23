@@ -109,4 +109,41 @@ function buildStrip(frames) {
   const ctx = strip.getContext("2d");
 
   ctx.fillStyle = "#f9f2e7";
-  ctx.fillRect(0, 0,
+  ctx.fillRect(0, 0, w, h);
+
+  const frameW = 600;
+  const frameH = Math.floor(frameW * (frames[0].height / frames[0].width));
+  const spacing = 40;
+  const totalPhotoH = frameH * 3 + spacing * 2;
+  const startY = Math.floor((h - totalPhotoH - 140) / 2);
+
+  ctx.filter = "sepia(0.6) contrast(1.05) brightness(0.95)";
+  frames.forEach((f, i) => {
+    const y = startY + i * (frameH + spacing);
+    ctx.drawImage(f, (w - frameW) / 2, y, frameW, frameH);
+  });
+
+  ctx.filter = "none";
+  ctx.fillStyle = "#222";
+  ctx.textAlign = "center";
+  ctx.font = "28px 'Cedarville Cursive', 'Courier New', cursive";
+
+  const quotes = [
+    "You're doing amazing—keep going!",
+    "Progress is progress, no matter how small.",
+    "One snapshot at a time, you're making memories.",
+    "Be the reason someone smiles today."
+  ];
+
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const date = new Date().toLocaleDateString("en-GB", {
+    day: "numeric", month: "long", year: "numeric"
+  });
+
+  ctx.fillText(`“${quote}”`, w / 2, h - 80);
+  ctx.font = "20px 'Courier New', monospace";
+  ctx.fillText(`Dubai, UAE • ${date}`, w / 2, h - 40);
+
+  return strip;
+}
+
