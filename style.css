@@ -1,47 +1,58 @@
 body {
   margin: 0;
   padding: 0;
-  text-align: center;
-  font-family: "Courier New", Courier, monospace;
   background: #f4f4f4;
+  font-family: "Courier New", Courier, monospace;
+  text-align: center;
 }
 
 video {
   width: 100%;
   max-width: 420px;
-  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+
+#overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+#countdown {
+  font-size: 6em;
+  color: red;
+  font-weight: bold;
+  margin-top: 20vh;
+}
+
+#frame-msg {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #222;
+}
+
+#buttons {
   margin-top: 20px;
 }
 
 button {
   padding: 12px 24px;
   font-size: 18px;
-  margin: 10px;
   cursor: pointer;
 }
 
-#countdown {
-  font-size: 6em;
-  font-weight: bold;
-  color: red;
-  margin-top: 10px;
-}
-
-#frame-msg {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #222;
-}
-
 canvas {
-  margin-top: 20px;
-  max-width: 420px;
-  width: 90%;
+  display: none;
+  margin: 20px auto;
+  max-width: 90%;
   border-radius: 8px;
-  display: block;
 }
 
-#buttons {
-  margin-top: 20px;
+#download {
+  display: none;
+  font-size: 16px;
+  padding: 10px 20px;
 }
