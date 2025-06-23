@@ -35,12 +35,20 @@
   </style>
 </head>
 <body>
-  <h1>📸 Strategic Mushroom Booth</h1>
-  <video id="camera" autoplay playsinline></video><br />
-  <button id="snap">Take Photo</button>
-  <button id="strip">Take Strip</button><br />
-  <canvas id="snapshot"></canvas><br />
-  <a id="download" download="photo.png">Download</a>
+  <h1 style="display:none;">📸 Strategic Mushroom Booth</h1>
+
+  <video id="camera" autoplay playsinline></video>
+  <div id="countdown"></div>
+  <div id="frame-msg"></div>
+
+  <div id="buttons">
+    <button id="snap">Take Photo</button>
+    <button id="strip">Take Strip</button>
+  </div>
+
+  <canvas id="snapshot" style="display:none;"></canvas><br />
+  <a id="download" download="photo-strip.png" style="display:none;">Download Strip</a>
+
   <script type="module" src="script.js"></script>
 </body>
 </html>
