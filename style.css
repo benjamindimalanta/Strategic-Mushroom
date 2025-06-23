@@ -11,7 +11,6 @@ body {
   padding-top: 20px;
 }
 
-/* ========== CAMERA SETUP ========== */
 #camera-wrapper {
   position: relative;
   width: 100%;
@@ -79,6 +78,7 @@ video {
 }
 
 #strip {
+  display: inline-block;
   padding: 12px 24px;
   font-size: 18px;
   border-radius: 6px;
@@ -94,7 +94,6 @@ video {
   background: #444;
 }
 
-/* ========== BUTTONS BELOW CAMERA ========== */
 #buttons {
   display: flex;
   flex-wrap: wrap;
@@ -106,7 +105,8 @@ video {
   margin-top: 15px;
 }
 
-#download, #retake {
+#download,
+#retake {
   display: none;
   padding: 10px 20px;
   font-size: 16px;
@@ -119,11 +119,11 @@ video {
   transition: background 0.2s ease;
 }
 
-#download:hover, #retake:hover {
+#download:hover,
+#retake:hover {
   background: #444;
 }
 
-/* ========== SNAPSHOT CANVAS ========== */
 canvas {
   display: none;
   margin-top: 20px;
@@ -137,7 +137,9 @@ canvas {
     flex-direction: column;
   }
 
-  #strip {
+  #strip,
+  #download,
+  #retake {
     width: 90%;
   }
 }
