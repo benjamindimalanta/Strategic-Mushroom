@@ -1,4 +1,4 @@
-/* GLOBAL STYLES */
+/* GLOBAL RESET & LAYOUT */
 body {
   margin: 0;
   padding: 0;
@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
 }
 
-/* CAMERA CONTAINER */
+/* CAMERA WRAPPER WITH PORTRAIT RATIO */
 #camera-wrapper {
   position: relative;
   width: 100%;
@@ -23,7 +23,7 @@ body {
   margin-bottom: 10px;
 }
 
-/* VIDEO DISPLAY */
+/* LIVE VIDEO PREVIEW */
 video {
   width: 100%;
   height: auto;
@@ -32,18 +32,19 @@ video {
   background: black;
 }
 
-/* VINTAGE EFFECT OVERLAY */
+/* SUBTLE VINTAGE TONE OVERLAY */
 #vintage-overlay {
   position: absolute;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  pointer-events: none;
   background: linear-gradient(to bottom, rgba(255, 235, 205, 0.2), rgba(0, 0, 0, 0.1));
   mix-blend-mode: overlay;
-  pointer-events: none;
-  border-radius: 8px;
 }
 
-/* CENTERED OVERLAY CONTENT */
+/* CENTERED COUNTDOWN + PROMPT */
 #overlay {
   position: absolute;
   top: 0;
@@ -51,12 +52,12 @@ video {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   pointer-events: none;
 }
 
-/* COUNTDOWN TIMER */
+/* COUNTDOWN NUMBER */
 #countdown {
   font-size: clamp(3rem, 8vw, 6em);
   color: #fdf6e3;
@@ -65,7 +66,7 @@ video {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* FRAME MESSAGE TEXT */
+/* PROMPT MESSAGE TEXT */
 #frame-msg {
   font-size: clamp(1rem, 4vw, 1.5em);
   font-weight: bold;
@@ -76,42 +77,55 @@ video {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* BUTTON CONTAINER */
+/* ACTION BUTTONS WRAPPED NEATLY */
 #buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
+  width: 100%;
+  max-width: 600px;
 }
 
-/* BUTTONS & DOWNLOAD LINK */
-button, a#download {
+/* BUTTON SHARED STYLES */
+button,
+a#download {
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 6px;
   border: none;
-  text-decoration: none;
   background: #333;
   color: white;
   cursor: pointer;
-  display: inline-block; /* changed from 'none' to default visible */
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s ease;
 }
 
-/* OPTIONAL: initially hide via JS if needed */
-button.hidden, a#download.hidden {
+button:hover,
+a#download:hover {
+  background: #444;
+}
+
+/* OPTIONAL: Hide elements initially via JavaScript */
+.hidden {
   display: none;
 }
 
-/* SNAPSHOT DISPLAY */
-#strip {
-  display: inline-block;
-}
-
+/* SNAPSHOT CANVAS */
 canvas {
   display: none;
   margin-top: 20px;
   max-width: 90%;
   height: auto;
   border-radius: 10px;
+}
+
+/* RESPONSIVE TWEAKS */
+@media (max-width: 480px) {
+  #buttons {
+    flex-direction: column;
+  }
 }
