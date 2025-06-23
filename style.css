@@ -1,25 +1,34 @@
-#retake, #download {
-  display: none;
-  font-size: 18px;
-  padding: 10px 20px;
-  border-radius: 6px;
-  background: #555;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin: 10px 5px 0;
-}
-
-/* Move button group closer to camera */
-#buttons {
-  margin-top: 10px;
+body {
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  font-family: 'Cedarville Cursive', 'Courier New', Courier, monospace;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
+  min-height: 100vh;
 }
 
-/* Vintage overlay effect */
+#camera-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 9 / 16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+video {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  background: black;
+}
+
 #vintage-overlay {
   position: absolute;
   top: 0; left: 0;
@@ -30,8 +39,64 @@
   border-radius: 8px;
 }
 
-/* Light font + visible prompt */
-#countdown, #frame-msg {
+#overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#countdown {
+  font-size: 6em;
   color: #fdf6e3;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+#frame-msg {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #fdf6e3;
+  text-align: center;
+  max-width: 90%;
+  line-height: 1.4;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+button, a#download {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  text-decoration: none;
+  background: #333;
+  color: white;
+  cursor: pointer;
+  display: none;
+}
+
+#strip {
+  display: inline-block;
+}
+
+canvas {
+  display: none;
+  margin-top: 20px;
+  max-width: 90%;
+  height: auto;
+  border-radius: 10px;
 }
