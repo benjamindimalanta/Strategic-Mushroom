@@ -17,7 +17,6 @@ const video = document.getElementById("camera");
 const canvas = document.getElementById("snapshot");
 const countdown = document.getElementById("countdown");
 const frameMsg = document.getElementById("frame-msg");
-const buttons = document.getElementById("buttons");
 const download = document.getElementById("download");
 const retake = document.getElementById("retake");
 const stripBtn = document.getElementById("strip");
@@ -38,13 +37,21 @@ function startCamera() {
   });
 }
 
-startCamera();
-
-stripBtn.onclick = async () => {
-  stripBtn.style.display = "none";
+function resetUI() {
+  stripBtn.style.display = "inline-block";
   download.style.display = "none";
   retake.style.display = "none";
   canvas.style.display = "none";
+  video.style.display = "block";
+  countdown.textContent = "";
+  frameMsg.textContent = "";
+}
+
+startCamera().then(resetUI);
+
+stripBtn.onclick = async () => {
+  resetUI();
+  stripBtn.style.display = "none";
 
   const frames = [];
 
@@ -73,7 +80,6 @@ stripBtn.onclick = async () => {
   if (streamHandle) {
     streamHandle.getTracks().forEach(track => track.stop());
   }
-
   video.style.display = "none";
 
   const strip = buildStrip(frames);
@@ -90,15 +96,8 @@ stripBtn.onclick = async () => {
 };
 
 retake.onclick = async () => {
-  retake.style.display = "none";
-  download.style.display = "none";
-  canvas.style.display = "none";
-  frameMsg.textContent = "";
-  countdown.textContent = "";
-
   await startCamera();
-  video.style.display = "block";
-  stripBtn.style.display = "inline-block";
+  resetUI();
 };
 
 function buildStrip(frames) {
@@ -109,4 +108,5 @@ function buildStrip(frames) {
   strip.height = h;
   const ctx = strip.getContext("2d");
 
-  ctx
+  ctx.fillStyle = "#f9f2e7";
+  ctx.fillRect(0, 0,
