@@ -22,8 +22,8 @@ const frameMsg = document.getElementById("frame-msg");
 const buttons = document.getElementById("buttons");
 const download = document.getElementById("download");
 const retake = document.getElementById("retake");
-
 let streamHandle = null;
+
 
 // 🗯️ Prompt Texts
 const prompts = [
@@ -32,7 +32,6 @@ const prompts = [
   "This is the last take—can't wait to show you the magic."
 ];
 
-// 🚀 Start the camera stream
 function startCamera() {
   return navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
     streamHandle = stream;
@@ -40,25 +39,23 @@ function startCamera() {
     video.style.display = "block";
   });
 }
-
 startCamera();
 
 document.getElementById("strip").onclick = async () => {
   buttons.style.display = "none";
   canvas.style.display = "none";
   download.style.display = "none";
-  retake.style.display = "none";
 
   const frames = [];
 
   for (let i = 0; i < 3; i++) {
     countdown.textContent = "3";
     frameMsg.textContent = prompts[i];
-    await delay(1000);
+    await wait(1000);
     countdown.textContent = "2";
-    await delay(1000);
+    await wait(1000);
     countdown.textContent = "1";
-    await delay(1000);
+    await wait(1000);
     countdown.textContent = "";
     frameMsg.textContent = "";
 
@@ -70,15 +67,17 @@ document.getElementById("strip").onclick = async () => {
     snap.getContext("2d").drawImage(video, 0, 0);
     frames.push(snap);
 
-    await delay(800);
+    await wait(800);
   }
 
-  // Stop camera and hide video
-  if (streamHandle) {
-    streamHandle.getTracks().forEach(track => track.stop());
-  }
   video.style.display = "none";
-
+  
+// Stop all media tracks after capture
+if (streamHandle) {
+  streamHandle.getTracks().forEach(track => track.stop());
+}
+retake.style.display = "inline-block";
+  
   const strip = buildStrip(frames);
   canvas.width = 1080;
   canvas.height = 1920;
@@ -87,24 +86,11 @@ document.getElementById("strip").onclick = async () => {
 
   download.href = canvas.toDataURL("image/png");
   download.style.display = "inline-block";
-  retake.style.display = "inline-block";
 
   await uploadToFirebase(canvas, `strips/strip-${Date.now()}.png`);
-};
-
-// 🔁 Retake Logic
-retake.onclick = async () => {
-  retake.style.display = "none";
-  download.style.display = "none";
-  canvas.style.display = "none";
-  frameMsg.textContent = "";
-  countdown.textContent = "";
-
-  await startCamera();
   buttons.style.display = "block";
 };
 
-// 🎨 Strip Composition
 function buildStrip(frames) {
   const w = 1080;
   const h = 1920;
@@ -113,21 +99,25 @@ function buildStrip(frames) {
   strip.height = h;
   const ctx = strip.getContext("2d");
 
+  // 🧁 Background
   ctx.fillStyle = "#f9f2e7";
   ctx.fillRect(0, 0, w, h);
 
+  // 📏 Frame sizing
   const frameW = 600;
   const frameH = Math.floor(frameW * (frames[0].height / frames[0].width));
   const spacing = 40;
   const totalPhotoH = frameH * 3 + spacing * 2;
   const startY = Math.floor((h - totalPhotoH - 140) / 2);
 
+  // 🖼️ Draw 3 photos
   ctx.filter = "sepia(0.6) contrast(1.05) brightness(0.95)";
   frames.forEach((f, i) => {
     const y = startY + i * (frameH + spacing);
     ctx.drawImage(f, (w - frameW) / 2, y, frameW, frameH);
   });
 
+  // ✨ Add footer
   ctx.filter = "none";
   ctx.fillStyle = "#222";
   ctx.textAlign = "center";
@@ -152,16 +142,13 @@ function buildStrip(frames) {
   return strip;
 }
 
-// ⏱️ Helpers
-function delay(ms) {
+function wait(ms) {
   return new Promise(res => setTimeout(res, ms));
 }
 
 function flash() {
   document.body.style.backgroundColor = "white";
-  setTimeout(() => {
-    document.body.style.backgroundColor = "#f4f4f4";
-  }, 100);
+  setTimeout(() => document.body.style.backgroundColor = "#f4f4f4", 100);
 }
 
 function uploadToFirebase(canvas, filename) {
@@ -178,3 +165,12 @@ function uploadToFirebase(canvas, filename) {
     }, "image/png");
   });
 }
+retake.onclick = async () => {
+  canvas.style.display = "none";
+  download.style.display = "none";
+  retake.style.display = "none";
+  frameMsg.textContent = "";
+  countdown.textContent = "";
+  await startCamera();
+  buttons.style.display = "block";
+};
