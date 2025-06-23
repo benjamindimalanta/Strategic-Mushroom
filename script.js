@@ -25,19 +25,19 @@ const retake = document.getElementById("retake");
 
 let streamHandle = null;
 
-// 🗯️ Prompt Texts
 const prompts = [
   "Let's create a memorable picture together.",
   "Capturing 2nd picture.",
   "This is the last take—can't wait to show you the magic."
 ];
 
-// 🚀 Start the camera stream
+// 🚀 Start the camera stream with CSS filter
 function startCamera() {
   return navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
     streamHandle = stream;
     video.srcObject = stream;
     video.style.display = "block";
+    video.style.filter = "sepia(0.6) contrast(1.05) brightness(0.95)";
   });
 }
 
@@ -73,7 +73,6 @@ document.getElementById("strip").onclick = async () => {
     await delay(800);
   }
 
-  // Stop camera and hide video
   if (streamHandle) {
     streamHandle.getTracks().forEach(track => track.stop());
   }
@@ -92,7 +91,6 @@ document.getElementById("strip").onclick = async () => {
   await uploadToFirebase(canvas, `strips/strip-${Date.now()}.png`);
 };
 
-// 🔁 Retake Logic
 retake.onclick = async () => {
   retake.style.display = "none";
   download.style.display = "none";
@@ -104,7 +102,6 @@ retake.onclick = async () => {
   buttons.style.display = "block";
 };
 
-// 🎨 Strip Composition
 function buildStrip(frames) {
   const w = 1080;
   const h = 1920;
@@ -152,7 +149,6 @@ function buildStrip(frames) {
   return strip;
 }
 
-// ⏱️ Helpers
 function delay(ms) {
   return new Promise(res => setTimeout(res, ms));
 }
