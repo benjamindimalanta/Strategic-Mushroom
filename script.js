@@ -21,6 +21,9 @@ const countdown = document.getElementById("countdown");
 const frameMsg = document.getElementById("frame-msg");
 const buttons = document.getElementById("buttons");
 const download = document.getElementById("download");
+const retake = document.getElementById("retake");
+let streamHandle = null;
+
 
 // 🗯️ Prompt Texts
 const prompts = [
@@ -29,9 +32,14 @@ const prompts = [
   "This is the last take—can't wait to show you the magic."
 ];
 
-navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-  video.srcObject = stream;
-}).catch(() => alert("Camera access denied."));
+function startCamera() {
+  return navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+    streamHandle = stream;
+    video.srcObject = stream;
+    video.style.display = "block";
+  });
+}
+startCamera();
 
 document.getElementById("strip").onclick = async () => {
   buttons.style.display = "none";
@@ -63,7 +71,13 @@ document.getElementById("strip").onclick = async () => {
   }
 
   video.style.display = "none";
-
+  
+// Stop all media tracks after capture
+if (streamHandle) {
+  streamHandle.getTracks().forEach(track => track.stop());
+}
+retake.style.display = "inline-block";
+  
   const strip = buildStrip(frames);
   canvas.width = 1080;
   canvas.height = 1920;
@@ -151,3 +165,12 @@ function uploadToFirebase(canvas, filename) {
     }, "image/png");
   });
 }
+retake.onclick = async () => {
+  canvas.style.display = "none";
+  download.style.display = "none";
+  retake.style.display = "none";
+  frameMsg.textContent = "";
+  countdown.textContent = "";
+  await startCamera();
+  buttons.style.display = "block";
+};
