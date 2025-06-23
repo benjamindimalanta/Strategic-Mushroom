@@ -66,7 +66,13 @@ stripBtn.onclick = async () => {
     countdown.textContent = "";
     frameMsg.textContent = "";
 
-    flash();
+    function flash() {
+  document.body.style.backgroundColor = "white";
+  setTimeout(() => {
+    document.body.style.backgroundColor = "#f4f4f4";
+  }, 100);
+}
+
 
     const snap = document.createElement("canvas");
     snap.width = video.videoWidth;
