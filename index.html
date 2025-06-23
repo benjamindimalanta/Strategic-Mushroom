@@ -5,49 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Strategic Mushroom Photo Booth</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Minimal inline fallback in case style.css fails to load */
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      background: #f4f4f4;
-    }
-    video, canvas {
-      width: 90%;
-      max-width: 400px;
-      border-radius: 10px;
-      margin: 10px auto;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-    #countdown {
-      font-size: 5em;
-      font-weight: bold;
-      position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: red;
-      display: none;
-    }
-  </style>
 </head>
 <body>
-  <h1 style="display:none;">📸 Strategic Mushroom Booth</h1>
-
   <video id="camera" autoplay playsinline></video>
-  <div id="countdown"></div>
-  <div id="frame-msg"></div>
-
-  <div id="buttons">
-    <button id="snap">Take Photo</button>
-    <button id="strip">Take Strip</button>
+  <div id="overlay">
+    <div id="countdown"></div>
+    <div id="frame-msg"></div>
   </div>
 
-  <canvas id="snapshot" style="display:none;"></canvas><br />
-  <a id="download" download="photo-strip.png" style="display:none;">Download Strip</a>
+  <div id="buttons">
+    <button id="strip">Take a Snap</button>
+  </div>
+
+  <canvas id="snapshot"></canvas>
+  <a id="download" download="photo-strip.png">Download Strip</a>
 
   <script type="module" src="script.js"></script>
 </body>
