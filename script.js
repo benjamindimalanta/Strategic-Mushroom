@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
+// --- Firebase Configuration ---
 const firebaseConfig = {
   apiKey: "AIzaSyCANQvUbZ0xMIyZi3l9RCeuS2pGVEcODDk",
   authDomain: "strategic-mushroom.firebaseapp.com",
@@ -13,6 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
+// --- DOM Elements ---
 const video = document.getElementById("camera");
 const canvas = document.getElementById("snapshot");
 const countdown = document.getElementById("countdown");
@@ -29,6 +31,19 @@ const prompts = [
   "This is the last take—can't wait to show you the magic."
 ];
 
+// --- Utility Functions ---
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function flash() {
+  document.body.style.backgroundColor = "white";
+  setTimeout(() => {
+    document.body.style.backgroundColor = "#f4f4f4";
+  }, 100);
+}
+
+// --- Core Logic ---
 function startCamera() {
   return navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
     streamHandle = stream;
@@ -66,13 +81,7 @@ stripBtn.onclick = async () => {
     countdown.textContent = "";
     frameMsg.textContent = "";
 
-    function flash() {
-  document.body.style.backgroundColor = "white";
-  setTimeout(() => {
-    document.body.style.backgroundColor = "#f4f4f4";
-  }, 100);
-}
-
+    flash();
 
     const snap = document.createElement("canvas");
     snap.width = video.videoWidth;
@@ -152,7 +161,9 @@ function buildStrip(frames) {
 
   return strip;
 }
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
+async function uploadToFirebase(canvas, path) {
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+  const fileRef = ref(storage, path);
+  await uploadBytes(fileRef, blob);
+}
