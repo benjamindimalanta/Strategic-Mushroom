@@ -146,4 +146,7 @@ function buildStrip(frames) {
 
   return strip;
 }
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
