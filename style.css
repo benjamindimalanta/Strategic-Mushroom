@@ -1,29 +1,47 @@
 body {
+  margin: 0;
+  padding: 0;
   text-align: center;
-  font-family: sans-serif;
+  font-family: "Courier New", Courier, monospace;
   background: #f4f4f4;
 }
 
-video, canvas {
-  width: 90%;
-  max-width: 400px;
-  border-radius: 10px;
-  margin: 10px auto;
+video {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  margin-top: 20px;
 }
 
 button {
-  padding: 10px 20px;
-  font-size: 16px;
-  margin: 5px;
+  padding: 12px 24px;
+  font-size: 18px;
+  margin: 10px;
+  cursor: pointer;
 }
 
 #countdown {
-  font-size: 5em;
+  font-size: 6em;
   font-weight: bold;
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   color: red;
-  display: none;
+  margin-top: 10px;
+}
+
+#frame-msg {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+canvas {
+  margin-top: 20px;
+  max-width: 420px;
+  width: 90%;
+  border-radius: 8px;
+  display: block;
+}
+
+#buttons {
+  margin-top: 20px;
 }
