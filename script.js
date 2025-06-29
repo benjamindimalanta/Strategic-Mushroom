@@ -148,10 +148,11 @@ stripBtn.onclick = async () => {
   context.textAlign = "center";
   context.textBaseline = "middle";
 
-  const lineHeight = 22;
+  const lineHeight = 24; // ⬅️ bump this up from 20 or 22 to give breathing room
   context.fillText(quote, canvas.width / 2, footerY + lineHeight);
   context.fillText(now, canvas.width / 2, footerY + lineHeight * 2);
   context.fillText(location, canvas.width / 2, footerY + lineHeight * 3);
+
 
   // Draw outer border
   context.strokeStyle = "#999";
