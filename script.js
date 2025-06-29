@@ -119,4 +119,13 @@ function buildStrip(frames) {
   const frameH = Math.floor(frameW * (frames[0].height / frames[0].width));
   const spacing = 40;
   const totalPhotoH = frameH * 3 + spacing * 2;
-  const startY = Math.floor((
+  const startY = Math.floor((h - totalPhotoH) / 2);
+  const x = Math.floor((w - frameW) / 2);
+
+  frames.forEach((frame, i) => {
+    const y = startY + i * (frameH + spacing);
+    ctx.drawImage(frame, x, y, frameW, frameH);
+  });
+
+  return strip;
+}
