@@ -1,4 +1,3 @@
-// 📷 DOM References
 const video = document.getElementById("camera");
 const canvas = document.getElementById("snapshot");
 const countdown = document.getElementById("countdown");
@@ -12,14 +11,12 @@ const context = canvas.getContext("2d");
 
 let streamHandle = null;
 
-// Prompts for each frame
 const prompts = [
   "Let's create a memorable picture together.",
   "Capturing 2nd picture...",
   "This is the last take — can’t wait to show you the magic!"
 ];
 
-// Helpers
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -27,7 +24,7 @@ function delay(ms) {
 function flash() {
   document.body.style.backgroundColor = "white";
   setTimeout(() => {
-    document.body.style.backgroundColor = "#f4f4f4";
+    document.body.style.backgroundColor = "#000";
   }, 100);
 }
 
@@ -51,11 +48,10 @@ function resetUI() {
   video.style.display = "block";
   countdown.textContent = "";
   frameMsg.textContent = "";
-  cameraSection.style.display = "block";
+  cameraSection.style.display = "flex";
   outputSection.style.display = "none";
 }
 
-// ✨ Snap workflow
 stripBtn.onclick = async () => {
   resetUI();
   stripBtn.style.display = "none";
@@ -79,7 +75,6 @@ stripBtn.onclick = async () => {
     const ctx = snap.getContext("2d");
     ctx.drawImage(video, 0, 0, snap.width, snap.height);
     frames.push(snap);
-
     await delay(800);
   }
 
@@ -96,7 +91,6 @@ stripBtn.onclick = async () => {
   canvas.height = 1920;
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(strip, 0, 0, canvas.width, canvas.height);
-  canvas.style.display = "block";
   canvas.classList.add("show");
 
   canvas.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -106,16 +100,13 @@ stripBtn.onclick = async () => {
   retake.style.display = "inline-block";
 };
 
-// 🔁 Retake
 retake.onclick = async () => {
   await startCamera();
   resetUI();
 };
 
-// 📸 Strip builder
 function buildStrip(frames) {
-  const w = 1080;
-  const h = 1920;
+  const w = 1080, h = 1920;
   const strip = document.createElement("canvas");
   strip.width = w;
   strip.height = h;
@@ -128,39 +119,4 @@ function buildStrip(frames) {
   const frameH = Math.floor(frameW * (frames[0].height / frames[0].width));
   const spacing = 40;
   const totalPhotoH = frameH * 3 + spacing * 2;
-  const startY = Math.floor((h - totalPhotoH - 140) / 2);
-
-  ctx.filter = "sepia(0.6) contrast(1.05) brightness(0.95)";
-  frames.forEach((f, i) => {
-    const y = startY + i * (frameH + spacing);
-    ctx.drawImage(f, (w - frameW) / 2, y, frameW, frameH);
-  });
-
-  ctx.filter = "none";
-  ctx.fillStyle = "#222";
-  ctx.textAlign = "center";
-
-  const quote = [
-    "You're doing amazing — keep going!",
-    "Progress is progress, no matter how small.",
-    "One snapshot at a time, you’re making memories.",
-    "Be the reason someone smiles today."
-  ][Math.floor(Math.random() * 4)];
-
-  const date = new Date().toLocaleDateString();
-  const quoteSize = Math.floor(h * 0.025);
-  const dateSize = Math.floor(h * 0.02);
-
-  ctx.font = `${quoteSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
-  ctx.fillText(quote, w / 2, h - 80);
-  ctx.font = `${dateSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
-  ctx.fillText(date, w / 2, h - 40);
-
-  return strip;
-}
-
-// 🚀 Boot on load
-window.onload = async () => {
-  await startCamera();
-  resetUI();
-};
+  const startY = Math.floor((
