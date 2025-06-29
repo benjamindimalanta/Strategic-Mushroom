@@ -1,4 +1,4 @@
-// Element references
+// 📷 DOM References
 const video = document.getElementById("camera");
 const canvas = document.getElementById("snapshot");
 const countdown = document.getElementById("countdown");
@@ -8,16 +8,18 @@ const retake = document.getElementById("retake");
 const stripBtn = document.getElementById("strip");
 const cameraSection = document.getElementById("camera-section");
 const outputSection = document.getElementById("output-section");
-
 const context = canvas.getContext("2d");
+
 let streamHandle = null;
 
+// Prompts for each frame
 const prompts = [
   "Let's create a memorable picture together.",
   "Capturing 2nd picture...",
   "This is the last take — can’t wait to show you the magic!"
 ];
 
+// Helpers
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -44,6 +46,7 @@ function resetUI() {
   stripBtn.style.display = "inline-block";
   download.style.display = "none";
   retake.style.display = "none";
+  canvas.classList.remove("show");
   canvas.style.display = "none";
   video.style.display = "block";
   countdown.textContent = "";
@@ -52,6 +55,7 @@ function resetUI() {
   outputSection.style.display = "none";
 }
 
+// ✨ Snap workflow
 stripBtn.onclick = async () => {
   resetUI();
   stripBtn.style.display = "none";
@@ -90,8 +94,10 @@ stripBtn.onclick = async () => {
   const strip = buildStrip(frames);
   canvas.width = 1080;
   canvas.height = 1920;
+  context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(strip, 0, 0, canvas.width, canvas.height);
   canvas.style.display = "block";
+  canvas.classList.add("show");
 
   canvas.scrollIntoView({ behavior: "smooth", block: "start" });
   download.href = canvas.toDataURL("image/png");
@@ -100,11 +106,13 @@ stripBtn.onclick = async () => {
   retake.style.display = "inline-block";
 };
 
+// 🔁 Retake
 retake.onclick = async () => {
   await startCamera();
   resetUI();
 };
 
+// 📸 Strip builder
 function buildStrip(frames) {
   const w = 1080;
   const h = 1920;
@@ -151,7 +159,7 @@ function buildStrip(frames) {
   return strip;
 }
 
-// Ensure camera starts when page loads
+// 🚀 Boot on load
 window.onload = async () => {
   await startCamera();
   resetUI();
