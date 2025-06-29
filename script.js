@@ -18,6 +18,14 @@ const prompts = [
   "Last one — say cheese!"
 ];
 
+const quotes = [
+  "Collect moments, not things.",
+  "Life is made of small moments like this.",
+  "You’ll never regret capturing a smile.",
+  "Photos are the return ticket to a moment otherwise gone.",
+  "This moment will never happen again. Cherish it."
+];
+
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -33,11 +41,9 @@ async function startCamera() {
     video.srcObject = stream;
     streamHandle = stream;
     await video.play();
-
     if (video.videoWidth === 0 || video.videoHeight === 0) {
       await new Promise(res => video.onloadedmetadata = res);
     }
-
     loader.style.display = "none";
   } catch (err) {
     alert("Camera access failed: " + err.message);
@@ -93,11 +99,32 @@ stripBtn.onclick = async () => {
   cameraSection.style.display = "none";
   outputSection.style.display = "block";
 
-  const strip = buildStrip(frames);
-  canvas.width = 1080;
-  canvas.height = 1920;
+  const frameW = frames[0].width;
+  const frameH = frames[0].height;
+  const spacing = 20;
+  const footerHeight = 100;
+
+  canvas.width = frameW;
+  canvas.height = frameH * 3 + spacing * 2 + footerHeight;
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(strip, 0, 0, canvas.width, canvas.height);
+
+  frames.forEach((frame, i) => {
+    const y = i * (frameH + spacing);
+    context.drawImage(frame, 0, y, frameW, frameH);
+  });
+
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  const now = new Date().toLocaleDateString();
+  const footerText = `${quote} — ${now}, Dubai, U.A.E`;
+
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, canvas.height - footerHeight, canvas.width, footerHeight);
+
+  context.fillStyle = "#333";
+  context.font = "18px sans-serif";
+  context.textAlign = "center";
+  context.fillText(footerText, canvas.width / 2, canvas.height - footerHeight / 2 + 6);
+
   canvas.classList.add("show");
   canvas.style.display = "block";
 
@@ -111,30 +138,5 @@ retake.onclick = async () => {
   await startCamera();
   resetUI();
 };
-
-function buildStrip(frames) {
-  const w = 1080, h = 1920;
-  const strip = document.createElement("canvas");
-  strip.width = w;
-  strip.height = h;
-  const ctx = strip.getContext("2d");
-
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, w, h);
-
-  const frameW = 600;
-  const frameH = Math.floor(frameW * (frames[0].height / frames[0].width));
-  const spacing = 40;
-  const totalPhotoH = frameH * 3 + spacing * 2;
-  const startY = Math.floor((h - totalPhotoH) / 2);
-  const x = Math.floor((w - frameW) / 2);
-
-  frames.forEach((frame, i) => {
-    const y = startY + i * (frameH + spacing);
-    ctx.drawImage(frame, x, y, frameW, frameH);
-  });
-
-  return strip;
-}
 
 startCamera();
