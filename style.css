@@ -6,22 +6,28 @@
 
 body {
   background: #f4f4f4;
-  font-family: 'Cedarville Cursive', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-family: 'Cedarville Cursive', 'Segoe UI', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
   padding: 20px;
-  color: #1a1a1a;
   text-align: center;
+  color: #1a1a1a;
 }
 
-/* Camera section */
-#camera-wrapper {
-  position: relative;
+/* Sections */
+section {
   width: 100%;
   max-width: 600px;
+}
+
+/* CAMERA SECTION */
+#camera-wrapper {
+  position: relative;
   aspect-ratio: 9 / 16;
+  background: black;
+  border-radius: 12px;
+  overflow: hidden;
   margin-bottom: 20px;
 }
 
@@ -29,8 +35,6 @@ video {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 10px;
-  background: black;
   filter: sepia(0.6) contrast(1.05) brightness(0.95);
 }
 
@@ -38,7 +42,6 @@ video {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  border-radius: 10px;
   background: linear-gradient(to bottom, rgba(255,235,205,0.2), rgba(0,0,0,0.1));
   mix-blend-mode: overlay;
 }
@@ -48,8 +51,8 @@ video {
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   pointer-events: none;
   padding: 10px;
 }
@@ -65,58 +68,46 @@ video {
   font-size: clamp(1.2rem, 3vw, 2rem);
   font-weight: bold;
   color: #fff8e1;
-  margin-top: 8px;
+  margin-top: 10px;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
 }
 
-/* Unified button styling */
-button,
-a#download {
-  background: #333;
-  color: white;
-  padding: 12px 24px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin: 10px;
-  text-decoration: none;
-  font-family: inherit;
-  transition: background 0.3s ease;
+/* OUTPUT SECTION */
+#output-section {
+  display: none;
+  margin-top: 20px;
+  text-align: center;
 }
 
-button:hover,
-a#download:hover {
-  background: #555;
+canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
 }
 
-#snap-zone {
-  margin-top: 30px;
-  pointer-events: auto;
-}
-
+/* BUTTONS */
 #buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
-  margin-top: 20px;
 }
 
-/* Canvas styling */
-canvas {
-  display: none;
-  max-width: 100%;
-  height: auto;
-  border-radius: 12px;
-  margin-top: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  transition: all 0.3s ease;
+button, a#download {
+  background: #333;
+  color: white;
+  font-size: 1rem;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+  transition: background 0.3s ease;
 }
 
-@media (max-height: 900px) {
-  canvas {
-    max-height: 80vh;
-    object-fit: contain;
-  }
+button:hover, a#download:hover {
+  background: #555;
 }
