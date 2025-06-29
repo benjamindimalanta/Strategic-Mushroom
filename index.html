@@ -1,122 +1,40 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhotoStrip Booth</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
+</head>
+<body>
 
-html, body {
-  height: 100%;
-  background: #f4f4f4;
-  color: #222;
-  font-family: 'Cedarville Cursive', cursive;
-  text-align: center;
-}
+  <div id="loader">Loading camera...</div>
 
-#loader {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: #ffffff;
-  color: #333;
-  font-size: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99;
-}
+  <!-- 📷 CAMERA SECTION -->
+  <section id="camera-section">
+    <div id="camera-wrapper">
+      <video id="camera" autoplay playsinline></video>
+      <div id="vintage-overlay"></div>
+      <div id="overlay">
+        <div id="countdown"></div>
+        <div id="frame-msg"></div>
+        <div id="snap-zone">
+          <button id="strip">📸 Take Photo Strip</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-section {
-  padding: 20px;
-}
+  <!-- 🖼️ OUTPUT SECTION -->
+  <section id="output-section">
+    <canvas id="snapshot"></canvas>
+    <div id="buttons">
+      <a id="download">💾 Download Strip</a>
+      <button id="retake">🔁 Retake</button>
+    </div>
+  </section>
 
-#camera-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-#camera-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  aspect-ratio: 9 / 16;
-  background: #000;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-#vintage-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
-  mix-blend-mode: overlay;
-}
-
-#overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-  padding: 1rem;
-}
-
-#countdown, #frame-msg {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 8px 16px;
-  border-radius: 8px;
-}
-
-#snap-zone {
-  margin-top: 1rem;
-}
-
-button, a#download {
-  background: #2b6cb0;
-  color: white;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  margin: 10px;
-  transition: background 0.3s ease;
-}
-
-button:hover, a#download:hover {
-  background: #2c5282;
-}
-
-#output-section {
-  display: none;
-}
-
-#buttons {
-  margin-top: 20px;
-}
-
-canvas {
-  display: none;
-  max-width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  margin: 20px auto;
-}
-
-canvas.show {
-  display: block;
-}
+<script src="script.js"></script>
+</body>
+</html>
