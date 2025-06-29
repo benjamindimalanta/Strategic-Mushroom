@@ -5,6 +5,10 @@ const frameMsg = document.getElementById("frame-msg");
 const download = document.getElementById("download");
 const retake = document.getElementById("retake");
 const stripBtn = document.getElementById("strip");
+const canvas = document.querySelector('canvas');
+const context = canvas.getContext('2d');
+context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
 
 let streamHandle = null;
 
@@ -26,10 +30,14 @@ function flash() {
 }
 
 function startCamera() {
-  return navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-    streamHandle = stream;
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => {
+    const video = document.querySelector('video');
     video.srcObject = stream;
-    video.style.display = "block";
+    video.play();
+  })
+  .catch(err => console.error("Camera error:", err));
+
   });
 }
 
