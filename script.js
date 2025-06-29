@@ -1,4 +1,4 @@
-// DOM References
+// DOM references
 const video = document.getElementById("camera");
 const canvas = document.getElementById("snapshot");
 const countdown = document.getElementById("countdown");
@@ -6,22 +6,25 @@ const frameMsg = document.getElementById("frame-msg");
 const download = document.getElementById("download");
 const retake = document.getElementById("retake");
 const stripBtn = document.getElementById("strip");
-const context = canvas.getContext("2d");
-let streamHandle = null;
-
 const cameraSection = document.getElementById("camera-section");
 const outputSection = document.getElementById("output-section");
+const context = canvas.getContext("2d");
 
+let streamHandle = null;
+
+// Prompts before each photo
 const prompts = [
   "Let's create a memorable picture together.",
   "Capturing 2nd picture...",
   "This is the last take — can’t wait to show you the magic!"
 ];
 
+// Delay utility
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Flash effect
 function flash() {
   document.body.style.backgroundColor = "white";
   setTimeout(() => {
@@ -29,6 +32,7 @@ function flash() {
   }, 100);
 }
 
+// Start camera stream
 async function startCamera() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -40,6 +44,7 @@ async function startCamera() {
   }
 }
 
+// Reset to capture mode
 function resetUI() {
   stripBtn.style.display = "inline-block";
   download.style.display = "none";
@@ -52,6 +57,7 @@ function resetUI() {
   outputSection.style.display = "none";
 }
 
+// Capture button handler
 stripBtn.onclick = async () => {
   resetUI();
   stripBtn.style.display = "none";
@@ -75,6 +81,7 @@ stripBtn.onclick = async () => {
     const ctx = snap.getContext("2d");
     ctx.drawImage(video, 0, 0, snap.width, snap.height);
     frames.push(snap);
+
     await delay(800);
   }
 
@@ -99,13 +106,16 @@ stripBtn.onclick = async () => {
   retake.style.display = "inline-block";
 };
 
+// Retake button handler
 retake.onclick = async () => {
   await startCamera();
   resetUI();
 };
 
+// Generate vertical strip
 function buildStrip(frames) {
-  const w = 1080, h = 1920;
+  const w = 1080;
+  const h = 1920;
   const strip = document.createElement("canvas");
   strip.width = w;
   strip.height = h;
@@ -126,4 +136,33 @@ function buildStrip(frames) {
     ctx.drawImage(f, (w - frameW) / 2, y, frameW, frameH);
   });
 
-  ctx.filter = "none
+  // Add quote and date
+  ctx.filter = "none";
+  ctx.fillStyle = "#222";
+  ctx.textAlign = "center";
+
+  const quote = [
+    "You're doing amazing — keep going!",
+    "Progress is progress, no matter how small.",
+    "One snapshot at a time, you’re making memories.",
+    "Be the reason someone smiles today."
+  ][Math.floor(Math.random() * 4)];
+
+  const date = new Date().toLocaleDateString();
+
+  const quoteSize = Math.floor(h * 0.025);
+  const dateSize = Math.floor(h * 0.02);
+
+  ctx.font = `${quoteSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
+  ctx.fillText(quote, w / 2, h - 80);
+  ctx.font = `${dateSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
+  ctx.fillText(date, w / 2, h - 40);
+
+  return strip;
+}
+
+// Boot on load
+window.onload = async () => {
+  await startCamera();
+  resetUI();
+};
