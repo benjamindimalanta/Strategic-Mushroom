@@ -103,27 +103,60 @@ stripBtn.onclick = async () => {
   const frameH = frames[0].height;
   const spacing = 20;
   const footerHeight = 100;
+  const outerPadding = 20;
+  const canvasBorder = 2;
 
-  canvas.width = frameW;
-  canvas.height = frameH * 3 + spacing * 2 + footerHeight;
+  canvas.width = frameW + outerPadding * 2;
+  canvas.height = frameH * 3 + spacing * 2 + footerHeight + outerPadding * 2;
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   frames.forEach((frame, i) => {
-    const y = i * (frameH + spacing);
-    context.drawImage(frame, 0, y, frameW, frameH);
+    const x = outerPadding;
+    const y = outerPadding + i * (frameH + spacing);
+    const radius = 20;
+
+    context.save();
+    context.beginPath();
+    context.moveTo(x + radius, y);
+    context.lineTo(x + frameW - radius, y);
+    context.quadraticCurveTo(x + frameW, y, x + frameW, y + radius);
+    context.lineTo(x + frameW, y + frameH - radius);
+    context.quadraticCurveTo(x + frameW, y + frameH, x + frameW - radius, y + frameH);
+    context.lineTo(x + radius, y + frameH);
+    context.quadraticCurveTo(x, y + frameH, x, y + frameH - radius);
+    context.lineTo(x, y + radius);
+    context.quadraticCurveTo(x, y, x + radius, y);
+    context.closePath();
+    context.clip();
+
+    context.drawImage(frame, x, y, frameW, frameH);
+    context.restore();
   });
 
+  // Draw footer background
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
   const now = new Date().toLocaleDateString();
-  const footerText = `${quote} — ${now}, Dubai, U.A.E`;
+  const location = "Dubai, U.A.E";
 
+  const footerY = canvas.height - footerHeight - outerPadding;
   context.fillStyle = "#ffffff";
-  context.fillRect(0, canvas.height - footerHeight, canvas.width, footerHeight);
+  context.fillRect(outerPadding, footerY, canvas.width - outerPadding * 2, footerHeight);
 
+  // Draw footer text lines
   context.fillStyle = "#333";
-  context.font = "18px sans-serif";
+  context.font = "16px sans-serif";
   context.textAlign = "center";
-  context.fillText(footerText, canvas.width / 2, canvas.height - footerHeight / 2 + 6);
+  context.textBaseline = "middle";
+
+  const lineHeight = 22;
+  context.fillText(quote, canvas.width / 2, footerY + lineHeight);
+  context.fillText(now, canvas.width / 2, footerY + lineHeight * 2);
+  context.fillText(location, canvas.width / 2, footerY + lineHeight * 3);
+
+  // Draw outer border
+  context.strokeStyle = "#999";
+  context.lineWidth = canvasBorder;
+  context.strokeRect(0, 0, canvas.width, canvas.height);
 
   canvas.classList.add("show");
   canvas.style.display = "block";
