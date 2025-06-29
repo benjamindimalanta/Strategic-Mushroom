@@ -87,27 +87,31 @@ video {
 
 .btn {
   display: inline-flex;
-  justify-content: center;
   align-items: center;
-  background: #2b6cb0;
-  color: white;
-  padding: 10px 20px;
-  font-size: 1rem;
+  justify-content: center;
+  background: linear-gradient(145deg, #3a8ddd, #2b6cb0);
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 1.1rem;
   font-family: 'Cedarville Cursive', cursive;
+  font-weight: normal;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   cursor: pointer;
   text-decoration: none;
   margin: 10px;
-  transition: background 0.3s ease;
-  min-width: 160px;
-  height: 44px;
-  box-sizing: border-box;
+  min-width: 180px;
+  height: 48px;
+  transition: all 0.25s ease-in-out;
 }
 
 .btn:hover {
-  background: #2c5282;
+  background: linear-gradient(145deg, #4e9cf2, #2c5282);
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
 }
+
 
 #output-section {
   display: none;
