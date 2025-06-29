@@ -1,4 +1,4 @@
-// DOM references
+// DOM References
 const video = document.getElementById("camera");
 const canvas = document.getElementById("snapshot");
 const countdown = document.getElementById("countdown");
@@ -7,8 +7,10 @@ const download = document.getElementById("download");
 const retake = document.getElementById("retake");
 const stripBtn = document.getElementById("strip");
 const context = canvas.getContext("2d");
-
 let streamHandle = null;
+
+const cameraSection = document.getElementById("camera-section");
+const outputSection = document.getElementById("output-section");
 
 const prompts = [
   "Let's create a memorable picture together.",
@@ -46,6 +48,8 @@ function resetUI() {
   video.style.display = "block";
   countdown.textContent = "";
   frameMsg.textContent = "";
+  cameraSection.style.display = "block";
+  outputSection.style.display = "none";
 }
 
 stripBtn.onclick = async () => {
@@ -71,7 +75,6 @@ stripBtn.onclick = async () => {
     const ctx = snap.getContext("2d");
     ctx.drawImage(video, 0, 0, snap.width, snap.height);
     frames.push(snap);
-
     await delay(800);
   }
 
@@ -80,18 +83,16 @@ stripBtn.onclick = async () => {
   }
 
   video.style.display = "none";
+  cameraSection.style.display = "none";
+  outputSection.style.display = "block";
 
-  // Build and display the final strip
   const strip = buildStrip(frames);
   canvas.width = 1080;
   canvas.height = 1920;
   context.drawImage(strip, 0, 0, canvas.width, canvas.height);
   canvas.style.display = "block";
 
-  // Auto-scroll to the result
-  canvas.scrollIntoView({ behavior: "smooth", block: "center" });
-
-  // Enable export options
+  canvas.scrollIntoView({ behavior: "smooth", block: "start" });
   download.href = canvas.toDataURL("image/png");
   download.download = `photostrip-${Date.now()}.png`;
   download.style.display = "inline-block";
@@ -104,8 +105,7 @@ retake.onclick = async () => {
 };
 
 function buildStrip(frames) {
-  const w = 1080;
-  const h = 1920;
+  const w = 1080, h = 1920;
   const strip = document.createElement("canvas");
   strip.width = w;
   strip.height = h;
@@ -126,30 +126,4 @@ function buildStrip(frames) {
     ctx.drawImage(f, (w - frameW) / 2, y, frameW, frameH);
   });
 
-  // Add quote and date (scaled to canvas size)
-  ctx.filter = "none";
-  ctx.fillStyle = "#222";
-  ctx.textAlign = "center";
-
-  const quotes = [
-    "You're doing amazing — keep going!",
-    "Progress is progress, no matter how small.",
-    "One snapshot at a time, you’re making memories.",
-    "Be the reason someone smiles today."
-  ];
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
-  const date = new Date().toLocaleDateString();
-
-  const quoteSize = Math.floor(h * 0.025);
-  const dateSize = Math.floor(h * 0.02);
-
-  ctx.font = `${quoteSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
-  ctx.fillText(quote, w / 2, h - 80);
-  ctx.font = `${dateSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
-  ctx.fillText(date, w / 2, h - 40);
-
-  return strip;
-}
-
-// Initialize camera on load
-startCamera().then(resetUI);
+  ctx.filter = "none
