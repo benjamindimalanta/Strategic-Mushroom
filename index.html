@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Strategic Mushroom Booth</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <div id="camera-wrapper">
-    <video id="camera" autoplay playsinline></video>
-    <div id="vintage-overlay"></div>
-    <div id="overlay">
-      <div id="countdown"></div>
-      <div id="frame-msg"></div>
-      <div id="snap-zone">
-        <button id="strip">Take a Snap</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Strategic Mushroom Booth</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="camera-wrapper">
+      <video id="camera" autoplay playsinline></video>
+      <div id="vintage-overlay"></div>
+      <div id="overlay">
+        <div id="countdown"></div>
+        <div id="frame-msg"></div>
+        <div id="snap-zone">
+          <button id="strip">Take a Snap</button>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div id="buttons">
-    <a id="download" download="photo-strip.png">Download Strip</a>
-    <button id="retake">Take Another</button>
-  </div>
-
-  <canvas id="snapshot"></canvas>
-
-  <script type="module" src="script.js"></script>
-</body>
+    <div id="buttons">
+      <a id="download" download="photo-strip.png">Download Strip</a>
+      <button id="retake">Take Another</button>
+    </div>
+    <canvas id="snapshot"></canvas>
+    <script type="module" src="script.js"></script>
+  </body>
 </html>
