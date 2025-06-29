@@ -1,39 +1,44 @@
-body {
+/* Reset + Base */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
   background: #f4f4f4;
-  font-family: 'Cedarville Cursive', 'Courier New', Courier, monospace;
+  font-family: 'Cedarville Cursive', 'Segoe UI', 'Helvetica Neue', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  padding-top: 20px;
+  padding: 20px;
+  color: #1a1a1a;
+  text-align: center;
 }
 
+/* Camera Container */
 #camera-wrapper {
   position: relative;
   width: 100%;
   max-width: 600px;
   aspect-ratio: 9 / 16;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 video {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
   background: black;
   filter: sepia(0.6) contrast(1.05) brightness(0.95);
 }
 
 #vintage-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
+  inset: 0;
+  border-radius: 10px;
   pointer-events: none;
   background: linear-gradient(to bottom, rgba(255,235,205,0.2), rgba(0,0,0,0.1));
   mix-blend-mode: overlay;
@@ -41,82 +46,70 @@ video {
 
 #overlay {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  padding: 10px;
 }
 
 #countdown {
-  font-size: clamp(3rem, 8vw, 6em);
-  color: #fdf6e3;
+  font-size: clamp(3rem, 10vw, 6rem);
   font-weight: bold;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+  color: #fff8e1;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
 }
 
 #frame-msg {
-  font-size: clamp(1rem, 4vw, 1.5em);
+  font-size: clamp(1.2rem, 3vw, 2rem);
   font-weight: bold;
-  color: #fdf6e3;
-  text-align: center;
-  max-width: 90%;
-  margin-top: 10px;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  color: #fff8e1;
+  margin-top: 8px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
 }
 
-#snap-zone {
-  margin-top: 30px;
-  pointer-events: all;
-}
-
-#strip {
-  padding: 12px 24px;
-  font-size: 18px;
-  border-radius: 6px;
-  border: none;
+/* Button Styling */
+button,
+a#download {
   background: #333;
   color: white;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  margin: 10px;
+  text-decoration: none;
+  font-family: inherit;
+  transition: background 0.3s ease;
 }
 
-#strip:hover {
-  background: #444;
+button:hover,
+a#download:hover {
+  background: #555;
+}
+
+/* Snap Zone */
+#snap-zone {
+  margin-top: 30px;
+  pointer-events: auto;
 }
 
 #buttons {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 10px;
   justify-content: center;
   margin-top: 20px;
 }
 
-#download,
-#retake {
-  display: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  background: #333;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-#download:hover,
-#retake:hover {
-  background: #444;
-}
-
+/* Canvas Output */
 canvas {
   display: none;
-  margin-top: 20px;
   max-width: 100%;
-  border-radius: 10px;
+  height: auto;
+  border-radius: 12px;
+  margin-top: 20px;
 }
