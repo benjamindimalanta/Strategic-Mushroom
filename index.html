@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Strategic Mushroom Booth</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photostrip Booth</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- 📸 CAMERA SECTION -->
+  <section id="camera-section">
     <div id="camera-wrapper">
       <video id="camera" autoplay playsinline></video>
       <div id="vintage-overlay"></div>
@@ -19,11 +22,17 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- 🖼️ OUTPUT SECTION -->
+  <section id="output-section">
+    <canvas id="snapshot"></canvas>
     <div id="buttons">
       <a id="download" download="photo-strip.png">Download Strip</a>
       <button id="retake">Take Another</button>
     </div>
-    <canvas id="snapshot"></canvas>
-    <script type="module" src="script.js"></script>
-  </body>
+  </section>
+
+  <script src="script.js"></script>
+</body>
 </html>
