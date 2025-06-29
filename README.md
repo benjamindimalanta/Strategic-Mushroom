@@ -31,3 +31,35 @@ Clone the repo and open `index.html` in any modern browser:
 ```bash
 git clone https://github.com/benjamindimalanta/Strategic-Mushroom.git
 cd Strategic-Mushroom
+
+
+📁 Strategic-Mushroom/
+├─ index.html
+├─ style.css
+├─ script.js
+├─ screenshot.png   👈 Add your photostrip output image here
+├─ README.md
+
+
+
+---
+
+### ✅ What Else to Add to Your GitHub Project:
+| Item              | Description                                                                 |
+|-------------------|-----------------------------------------------------------------------------|
+| `README.md`       | ✅ included above — clear and detailed                                       |
+| `screenshot.png`  | Optional, but helps visualize the final output (use a sample photo strip)   |
+| `.gitattributes`, `.gitignore` | Optional housekeeping if you plan to scale project               |
+| `LICENSE`         | (Optional) Add MIT or Creative Commons license if you want open-source use |
+
+---
+
+If you want, I can help you add dynamic geolocation support, or even a version toggle between “casual” and “professional” strip themes (fonts, borders, etc.). Let’s go all-in on this booth.
+
+
+🖋 Credits
+Designed & built by @benjamindimalanta
+
+Font: Cedarville Cursive
+
+Inspired by retro photo booths with a touch of JavaScript ✨
