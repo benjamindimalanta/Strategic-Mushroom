@@ -1,36 +1,30 @@
+/* Base reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-body {
-  background: #f4f4f4;
+body, html {
+  height: 100%;
+  background: #000;
+  color: #fff;
   font-family: 'Cedarville Cursive', 'Segoe UI', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
   text-align: center;
-  color: #1a1a1a;
+  overflow-x: hidden;
 }
 
-/* Sections */
 section {
   width: 100%;
-  max-width: 600px;
+  max-width: 100vw;
 }
 
-/* CAMERA SECTION */
 #camera-section {
+  height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
-  padding: 0;
-  margin: 0;
-  height: auto;
-  min-height: 0;
+  background: black;
 }
 
 #camera-wrapper {
@@ -38,10 +32,10 @@ section {
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
-  overflow: hidden;
   position: relative;
   background: black;
   border-radius: 12px;
+  overflow: hidden;
 }
 
 video {
@@ -52,13 +46,13 @@ video {
   background: black;
 }
 
-
 #vintage-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background: linear-gradient(to bottom, rgba(255,235,205,0.2), rgba(0,0,0,0.1));
   mix-blend-mode: overlay;
+  border-radius: 12px;
 }
 
 #overlay {
@@ -66,10 +60,11 @@ video {
   inset: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   pointer-events: none;
-  padding: 10px;
+  z-index: 2;
+  padding: 1rem;
 }
 
 #countdown {
@@ -83,51 +78,50 @@ video {
   font-size: clamp(1.2rem, 3vw, 2rem);
   font-weight: bold;
   color: #fff8e1;
-  margin-top: 10px;
+  margin-top: 8px;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
 }
 
-/* OUTPUT SECTION */
-#output-section {
-  display: none;
-  margin-top: 20px;
-  text-align: center;
+#snap-zone {
+  pointer-events: auto;
+  z-index: 10;
+  margin-top: 1rem;
 }
 
-canvas {
-  max-width: 100%;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  margin-bottom: 20px;
-}
-
-/* BUTTONS */
-#buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-button, a#download {
+button,
+a#download {
   background: #333;
   color: white;
-  font-size: 1rem;
   padding: 12px 24px;
+  font-size: 1rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   text-decoration: none;
   font-family: inherit;
   transition: background 0.3s ease;
+  margin: 10px;
 }
 
-button:hover, a#download:hover {
+button:hover,
+a#download:hover {
   background: #555;
 }
 
-/* Canvas starts hidden and animates in */
+#output-section {
+  display: none;
+  background: #f9f2e7;
+  padding: 30px 0;
+}
+
+#buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
 canvas {
   display: none;
   opacity: 0;
@@ -135,12 +129,11 @@ canvas {
   max-width: 100%;
   height: auto;
   border-radius: 12px;
-  margin: 20px auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  margin: 0 auto;
 }
 
 canvas.show {
   display: block;
   opacity: 1;
 }
-
