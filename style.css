@@ -1,39 +1,47 @@
-/* Base reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-body, html {
+html, body {
   height: 100%;
-  background: #000;
-  color: #fff;
-  font-family: 'Cedarville Cursive', 'Segoe UI', sans-serif;
+  background: #f4f4f4;
+  color: #222;
+  font-family: 'Cedarville Cursive', cursive;
   text-align: center;
-  overflow-x: hidden;
 }
 
-section {
+#loader {
+  position: fixed;
   width: 100%;
-  max-width: 100vw;
-}
-
-#camera-section {
-  height: 100vh;
+  height: 100%;
+  background: #ffffff;
+  color: #333;
+  font-size: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: black;
+  z-index: 99;
+}
+
+section {
+  padding: 20px;
+}
+
+#camera-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 #camera-wrapper {
-  aspect-ratio: 9 / 16;
-  width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
   position: relative;
-  background: black;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 9 / 16;
+  background: #000;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -43,16 +51,14 @@ video {
   height: 100%;
   object-fit: cover;
   display: block;
-  background: black;
 }
 
 #vintage-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(255,235,205,0.2), rgba(0,0,0,0.1));
+  background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
   mix-blend-mode: overlay;
-  border-radius: 12px;
 }
 
 #overlay {
@@ -62,78 +68,55 @@ video {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  pointer-events: none;
   z-index: 2;
   padding: 1rem;
 }
 
-#countdown {
-  font-size: clamp(3rem, 10vw, 6rem);
-  font-weight: bold;
-  color: #fff8e1;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
-}
-
-#frame-msg {
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  font-weight: bold;
-  color: #fff8e1;
-  margin-top: 8px;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+#countdown, #frame-msg {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 8px 16px;
+  border-radius: 8px;
 }
 
 #snap-zone {
-  pointer-events: auto;
-  z-index: 10;
   margin-top: 1rem;
 }
 
-button,
-a#download {
-  background: #333;
+button, a#download {
+  background: #2b6cb0;
   color: white;
-  padding: 12px 24px;
+  padding: 10px 20px;
   font-size: 1rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   text-decoration: none;
-  font-family: inherit;
-  transition: background 0.3s ease;
   margin: 10px;
+  transition: background 0.3s ease;
 }
 
-button:hover,
-a#download:hover {
-  background: #555;
+button:hover, a#download:hover {
+  background: #2c5282;
 }
 
 #output-section {
   display: none;
-  background: #f9f2e7;
-  padding: 30px 0;
 }
 
 #buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
   margin-top: 20px;
 }
 
 canvas {
   display: none;
-  opacity: 0;
-  transition: opacity 0.5s ease;
   max-width: 100%;
-  height: auto;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
 canvas.show {
   display: block;
-  opacity: 1;
 }

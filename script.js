@@ -7,14 +7,15 @@ const retake = document.getElementById("retake");
 const stripBtn = document.getElementById("strip");
 const cameraSection = document.getElementById("camera-section");
 const outputSection = document.getElementById("output-section");
+const loader = document.getElementById("loader");
 const context = canvas.getContext("2d");
 
 let streamHandle = null;
 
 const prompts = [
-  "Let's create a memorable picture together.",
-  "Capturing 2nd picture...",
-  "This is the last take — can’t wait to show you the magic!"
+  "Smile! Let's start 📸",
+  "Second snap coming...",
+  "Last one — say cheese!"
 ];
 
 function delay(ms) {
@@ -22,10 +23,8 @@ function delay(ms) {
 }
 
 function flash() {
-  document.body.style.backgroundColor = "white";
-  setTimeout(() => {
-    document.body.style.backgroundColor = "#000";
-  }, 100);
+  document.body.style.backgroundColor = "#fff";
+  setTimeout(() => document.body.style.backgroundColor = "#f4f4f4", 100);
 }
 
 async function startCamera() {
@@ -34,6 +33,12 @@ async function startCamera() {
     video.srcObject = stream;
     streamHandle = stream;
     await video.play();
+
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      await new Promise(res => video.onloadedmetadata = res);
+    }
+
+    loader.style.display = "none";
   } catch (err) {
     alert("Camera access failed: " + err.message);
   }
@@ -53,7 +58,11 @@ function resetUI() {
 }
 
 stripBtn.onclick = async () => {
-  resetUI();
+  if (video.videoWidth === 0 || video.videoHeight === 0) {
+    alert("Camera not ready yet. Please wait a moment and try again.");
+    return;
+  }
+
   stripBtn.style.display = "none";
   const frames = [];
 
@@ -78,9 +87,7 @@ stripBtn.onclick = async () => {
     await delay(800);
   }
 
-  if (streamHandle) {
-    streamHandle.getTracks().forEach(track => track.stop());
-  }
+  if (streamHandle) streamHandle.getTracks().forEach(track => track.stop());
 
   video.style.display = "none";
   cameraSection.style.display = "none";
@@ -92,8 +99,8 @@ stripBtn.onclick = async () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(strip, 0, 0, canvas.width, canvas.height);
   canvas.classList.add("show");
+  canvas.style.display = "block";
 
-  canvas.scrollIntoView({ behavior: "smooth", block: "start" });
   download.href = canvas.toDataURL("image/png");
   download.download = `photostrip-${Date.now()}.png`;
   download.style.display = "inline-block";
@@ -112,7 +119,7 @@ function buildStrip(frames) {
   strip.height = h;
   const ctx = strip.getContext("2d");
 
-  ctx.fillStyle = "#f9f2e7";
+  ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, w, h);
 
   const frameW = 600;
@@ -129,3 +136,5 @@ function buildStrip(frames) {
 
   return strip;
 }
+
+startCamera();
