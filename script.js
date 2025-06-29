@@ -10,19 +10,16 @@ const context = canvas.getContext("2d");
 
 let streamHandle = null;
 
-// Prompts for each frame
 const prompts = [
   "Let's create a memorable picture together.",
-  "Capturing 2nd picture.",
-  "This is the last take—can't wait to show you the magic."
+  "Capturing 2nd picture...",
+  "This is the last take — can’t wait to show you the magic!"
 ];
 
-// Utility: Delay helper
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Flash effect
 function flash() {
   document.body.style.backgroundColor = "white";
   setTimeout(() => {
@@ -30,7 +27,6 @@ function flash() {
   }, 100);
 }
 
-// Start webcam
 async function startCamera() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -42,7 +38,6 @@ async function startCamera() {
   }
 }
 
-// Reset UI
 function resetUI() {
   stripBtn.style.display = "inline-block";
   download.style.display = "none";
@@ -53,7 +48,6 @@ function resetUI() {
   frameMsg.textContent = "";
 }
 
-// Main capture flow
 stripBtn.onclick = async () => {
   resetUI();
   stripBtn.style.display = "none";
@@ -81,32 +75,34 @@ stripBtn.onclick = async () => {
     await delay(800);
   }
 
-  // Stop camera
   if (streamHandle) {
     streamHandle.getTracks().forEach(track => track.stop());
   }
+
   video.style.display = "none";
 
-  // Build and display strip
+  // Build and display the final strip
   const strip = buildStrip(frames);
   canvas.width = 1080;
   canvas.height = 1920;
   context.drawImage(strip, 0, 0, canvas.width, canvas.height);
   canvas.style.display = "block";
 
-  // Enable download + retake
+  // Auto-scroll to the result
+  canvas.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  // Enable export options
   download.href = canvas.toDataURL("image/png");
+  download.download = `photostrip-${Date.now()}.png`;
   download.style.display = "inline-block";
   retake.style.display = "inline-block";
 };
 
-// Handle retake
 retake.onclick = async () => {
   await startCamera();
   resetUI();
 };
 
-// Assemble strip from 3 frames
 function buildStrip(frames) {
   const w = 1080;
   const h = 1920;
@@ -130,26 +126,30 @@ function buildStrip(frames) {
     ctx.drawImage(f, (w - frameW) / 2, y, frameW, frameH);
   });
 
-  // Add quote & date
+  // Add quote and date (scaled to canvas size)
   ctx.filter = "none";
   ctx.fillStyle = "#222";
   ctx.textAlign = "center";
-  ctx.font = "28px 'Cedarville Cursive', 'Courier New', cursive";
 
   const quotes = [
-    "You're doing amazing—keep going!",
+    "You're doing amazing — keep going!",
     "Progress is progress, no matter how small.",
-    "One snapshot at a time, you're making memories.",
+    "One snapshot at a time, you’re making memories.",
     "Be the reason someone smiles today."
   ];
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
   const date = new Date().toLocaleDateString();
 
+  const quoteSize = Math.floor(h * 0.025);
+  const dateSize = Math.floor(h * 0.02);
+
+  ctx.font = `${quoteSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
   ctx.fillText(quote, w / 2, h - 80);
+  ctx.font = `${dateSize}px 'Cedarville Cursive', 'Segoe UI', sans-serif`;
   ctx.fillText(date, w / 2, h - 40);
 
   return strip;
 }
 
-// Boot sequence
+// Initialize camera on load
 startCamera().then(resetUI);
