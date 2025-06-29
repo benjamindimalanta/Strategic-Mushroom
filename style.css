@@ -22,15 +22,27 @@ section {
 }
 
 /* CAMERA SECTION */
+#camera-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  margin: 0;
+  height: auto;
+  min-height: 0;
+}
+
 #camera-wrapper {
   aspect-ratio: 9 / 16;
   width: 100%;
+  max-width: 600px;
   max-height: 90vh;
   overflow: hidden;
+  position: relative;
   background: black;
   border-radius: 12px;
 }
-
 
 video {
   width: 100%;
