@@ -144,7 +144,7 @@ stripBtn.onclick = async () => {
 
   // Draw footer text lines
   context.fillStyle = "#333";
-  context.font = "16px sans-serif";
+  context.font = "20px 'Cedarville Cursive', cursive";
   context.textAlign = "center";
   context.textBaseline = "middle";
 
