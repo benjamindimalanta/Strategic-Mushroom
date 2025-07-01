@@ -1,5 +1,5 @@
 // 👇 Place your OpenCage API key here
-const GEOCODE_API_KEY = "YOUR_API_KEY"; 
+const GEOCODE_API_KEY = "c4cb82b0907d486b8c4ccb175cae1c40"; 
 
 // DOM references
 const video = document.getElementById("camera");
