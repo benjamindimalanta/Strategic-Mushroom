@@ -1,3 +1,7 @@
+// 👇 Place your OpenCage API key here
+const GEOCODE_API_KEY = "YOUR_API_KEY"; 
+
+// DOM references
 const video = document.getElementById("camera");
 const canvas = document.getElementById("snapshot");
 const countdown = document.getElementById("countdown");
@@ -23,7 +27,16 @@ const quotes = [
   "Life is made of small moments like this.",
   "You’ll never regret capturing a smile.",
   "Photos are the return ticket to a moment otherwise gone.",
-  "This moment will never happen again. Cherish it."
+  "This moment will never happen again. Cherish it.",
+  "A smile captured is a memory framed forever.",
+  "Time flies, but memories freeze.",
+  "Snapshots are little anchors in the sea of time.",
+  "Behind every photo is a heartbeat.",
+  "Still frames, still feelings.",
+  "Today’s candid is tomorrow’s treasure.",
+  "Every picture tells a love letter to the moment.",
+  "Pause. Snap. Remember.",
+  "The lens sees what the heart feels."
 ];
 
 function delay(ms) {
@@ -61,6 +74,26 @@ function resetUI() {
   frameMsg.textContent = "";
   cameraSection.style.display = "flex";
   outputSection.style.display = "none";
+}
+
+async function getUserLocationText() {
+  return new Promise((resolve) => {
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      try {
+        const res = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${GEOCODE_API_KEY}`);
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          const c = data.results[0].components;
+          resolve(`${c.city || c.town || c.village || c.county}, ${c.country}`);
+        } else {
+          resolve("Unknown location");
+        }
+      } catch {
+        resolve("Location unavailable");
+      }
+    }, () => resolve("Location denied"));
+  });
 }
 
 stripBtn.onclick = async () => {
@@ -114,7 +147,6 @@ stripBtn.onclick = async () => {
     const x = outerPadding;
     const y = outerPadding + i * (frameH + spacing);
     const radius = 20;
-
     context.save();
     context.beginPath();
     context.moveTo(x + radius, y);
@@ -128,33 +160,29 @@ stripBtn.onclick = async () => {
     context.quadraticCurveTo(x, y, x + radius, y);
     context.closePath();
     context.clip();
-
     context.drawImage(frame, x, y, frameW, frameH);
     context.restore();
   });
 
-  // Draw footer background
+  // 🎯 Footer
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
   const now = new Date().toLocaleDateString();
-  const location = "Dubai, U.A.E";
-
+  const location = await getUserLocationText();
   const footerY = canvas.height - footerHeight - outerPadding;
+
   context.fillStyle = "#ffffff";
   context.fillRect(outerPadding, footerY, canvas.width - outerPadding * 2, footerHeight);
 
-  // Draw footer text lines
   context.fillStyle = "#333";
   context.font = "20px 'Cedarville Cursive', cursive";
   context.textAlign = "center";
   context.textBaseline = "middle";
 
-  const lineHeight = 24; // ⬅️ bump this up from 20 or 22 to give breathing room
+  const lineHeight = 24;
   context.fillText(quote, canvas.width / 2, footerY + lineHeight);
   context.fillText(now, canvas.width / 2, footerY + lineHeight * 2);
   context.fillText(location, canvas.width / 2, footerY + lineHeight * 3);
 
-
-  // Draw outer border
   context.strokeStyle = "#999";
   context.lineWidth = canvasBorder;
   context.strokeRect(0, 0, canvas.width, canvas.height);
